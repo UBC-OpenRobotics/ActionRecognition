@@ -68,13 +68,17 @@ def extract_image_patch(image, bbox, patch_shape):
 
 class ImageEncoder(object):
     def __init__(self, checkpoint_filename, input_name="images", output_name="features"):
-        with tf.gfile.GFile(checkpoint_filename, "rb") as f:
-            graph_def = tf.GraphDef()
+        #tf.gfile has become tf.io.gfile
+        #with tf.gfile.GFile(checkpoint_filename, "rb") as f:
+        with tf.io.gfile.GFile(checkpoint_filename, "rb") as f:
+            #deprecated, obtain from compat.v1
+            #graph_def = tf.GraphDef()
+            graph_def = tf.compat.v1.GraphDef()
             graph_def.ParseFromString(f.read())
 
-        self.graph = tf.get_default_graph()
+        self.graph = tf.compat.v1.get_default_graph()
         tf.import_graph_def(graph_def, name="net")
-        self.session = tf.Session(graph=self.graph)
+        self.session = tf.compat.v1.Session(graph=self.graph)
 
         self.input_var = self.graph.get_tensor_by_name("net/%s:0" % input_name)
         self.output_var = self.graph.get_tensor_by_name("net/%s:0" % output_name)
