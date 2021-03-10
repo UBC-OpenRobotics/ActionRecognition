@@ -26,6 +26,8 @@ def choose_run_mode(args):
             sys.exit(1)
         cap = cv.VideoCapture(args.video)
         out_file_path = str(out_file_path / (args.video[:-4] + '_tf_out.mp4'))
+    elif args.data:
+      cap = False
     else:
         # Webcam input
         cap = cv.VideoCapture(0)

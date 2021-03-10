@@ -80,8 +80,12 @@ class ImageEncoder(object):
         tf.import_graph_def(graph_def, name="net")
         self.session = tf.compat.v1.Session(graph=self.graph)
 
-        self.input_var = self.graph.get_tensor_by_name("net/%s:0" % input_name)
-        self.output_var = self.graph.get_tensor_by_name("net/%s:0" % output_name)
+        #net/%s is deprecated
+        #self.input_var = self.graph.get_tensor_by_name("net/%s:0" % input_name)
+        #self.output_var = self.graph.get_tensor_by_name("net/%s:0" % output_name)
+
+        self.input_var = self.graph.get_tensor_by_name("%s:0" % input_name)
+        self.output_var = self.graph.get_tensor_by_name("%s:0" % output_name)
 
         assert len(self.output_var.get_shape()) == 2
         assert len(self.input_var.get_shape()) == 4

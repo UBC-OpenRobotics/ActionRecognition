@@ -13,16 +13,16 @@ class TfPoseVisualizer:
     def __init__(self, graph_path, target_size=(368, 368)):
         self.target_size = target_size
         # load graph
-        with tf.gfile.GFile(graph_path, 'rb') as f:
-            graph_def = tf.GraphDef()
+        with tf.io.gfile.GFile(graph_path, 'rb') as f:
+            graph_def = tf.compat.v1.GraphDef()
             graph_def.ParseFromString(f.read())
 
-        self.graph = tf.get_default_graph()
+        self.graph = tf.compat.v1.get_default_graph()
         tf.import_graph_def(graph_def, name='TfPoseEstimator')
-        self.persistent_sess = tf.Session(graph=self.graph)
-
-        self.tensor_image = self.graph.get_tensor_by_name('TfPoseEstimator/image:0')
-        self.tensor_output = self.graph.get_tensor_by_name('TfPoseEstimator/Openpose/concat_stage7:0')
+        self.persistent_sess = tf.compat.v1.Session(graph=self.graph)
+        
+        self.tensor_image = self.graph.get_tensor_by_name('image:0')
+        self.tensor_output = self.graph.get_tensor_by_name('Openpose/concat_stage7:0')
         self.heatMat = self.pafMat = None
 
     @staticmethod
