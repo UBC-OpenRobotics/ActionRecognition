@@ -1,6 +1,5 @@
 # Online-Realtime-Action-Recognition-based-on-OpenPose
-A skeleton-based real-time online action recognition project, classifying and recognizing base on framewise joints, which can be used for safety monitoring..   
-(The code comments are partly descibed in chinese)
+A skeleton-based real-time online action recognition project, classifying and recognizing base on framewise joints.
 
 
 ------
@@ -20,6 +19,7 @@ A skeleton-based real-time online action recognition project, classifying and re
  - numpy & scipy 
  - pathlib
  
+ install_dependencies.sh is a script that will install core dependencies and will download the VGG_origin model.
  
 ------
 ## Usage
@@ -37,30 +37,9 @@ A skeleton-based real-time online action recognition project, classifying and re
  - transforming the `.txt` to `.csv`, you can use EXCEL to do this.
  - do the training with the `traing.py` in `Action/training/`, remember to ***change the action_enum and output-layer of model***.
  
- 
-------
-## Test result
- - ***actions detection***
-<p align="center">
-    <img src="https://github.com/LZQthePlane/Online-Realtime-Action-Recognition-based-on-OpenPose/blob/master/test_out/webcam_test_out.gif", width="540">
- 
- - ***work surveilence***
-<p align="center">
-    <img src="https://github.com/LZQthePlane/Online-Realtime-Action-Recognition-based-on-OpenPose/blob/master/test_out/webcam_under_scene-1.gif", width="540">
-<p align="center">
-    <img src="https://github.com/LZQthePlane/Online-Realtime-Action-Recognition-based-on-OpenPose/blob/master/test_out/webcam_under_scene-2.gif", width="540">
- 
-  - ***multi people***
- <p align="center">
-    <img src="https://github.com/LZQthePlane/Online-Realtime-Action-Recognition-based-on-OpenPose/blob/master/test_out/webcam_multi-people.gif", width="540">
- 
-
--------
-## Note
- - Action recognition in this work is framewise based, so it's technically "**Pose recognition**" to be exactly;   
- - Action is actually a dynamic motion which consists of sequential static poses, therefore classifying framewisely is not a good solution.
- - Considering of using ***RNN(LSTM) model*** to classify actions with dynamic sequential joints data is the next step to improve this project.
-
+-----
+## Labelling Data
+- `action_labeller.py` is a GUI application that is meant to label images with the intention of training action recognition. It can be launched with `python3 action_labeller.py`. To run on the CPU, run `python3 action_labeller.py --use_cpu 1`. Three test images are provided in `test_data`. 
 
 ------
 ## Acknowledge
