@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import os
 import tkinter as tk
-from tkinter import PhotoImage, filedialog
+from tkinter import PhotoImage, filedialog, messagebox
 from PIL import Image
 from PIL import ImageTk
 
@@ -35,7 +35,10 @@ def process_img():
         # get pose info
         pose = TfPoseVisualizer.draw_pose_rgb(show, humans)  # return frame, joints, bboxes, xcenter
         joints_per_frame = np.array(pose[-1]).astype(np.str)
-        joints= np.array_split(joints_per_frame, len(humans))
+        
+        #Only seperate joints by human if they have been detected
+        if len(humans)>0:
+            joints= np.array_split(joints_per_frame, len(humans))
         
         human_idx = 0
         #Process Humans
@@ -77,8 +80,24 @@ def process_human():
             img_idx+=1
             process_img()
     else:
-        main_image.configure(image=blankTk)
-        main_image.image = blankTk
+        #No humans were dected, still show the image and then give warning dialog
+        out=show.copy()
+
+        #resize to display resolution
+        tkimg = cv.resize(out, (IMG_WIDTH, IMG_HEIGHT))
+        
+        #Change BGR to RGB for displaying
+        tkimg = cv.cvtColor(tkimg, cv.COLOR_BGR2RGB)
+
+        #Change to PIL format and then to ImageTk
+        tkimg = Image.fromarray(tkimg)
+        tkimg = ImageTk.PhotoImage(tkimg)
+        main_image.configure(image=tkimg)
+        main_image.image = tkimg
+
+        messagebox.showwarning("Warning", "Skipping image since no people are detected.") 
+        img_idx+=1
+        process_img()
 
 def onLabelClick(label_text):
     global human_idx, joints, img_idx, output_df
