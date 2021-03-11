@@ -161,7 +161,6 @@ if __name__ == '__main__':
     #Load estimator
     estimator = load_pretrain_model('VGG_origin')
     #action_classifier = load_action_premodel('Action/framewise_recognition.h5')
-        
 
     ### GUI    
     root = tk.Tk()
