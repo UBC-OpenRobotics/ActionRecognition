@@ -166,6 +166,7 @@ if __name__ == '__main__':
     ### GUI    
     root = tk.Tk()
     root.title('Action Recognition Labelling Tool')
+    root.iconphoto(False, tk.PhotoImage(file='favicon.png'))
 
     #### Top Frame ####
 
