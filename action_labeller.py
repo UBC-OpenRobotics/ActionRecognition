@@ -144,11 +144,14 @@ def onLabelClick(label_text):
     #Extract normalized joints per frame
     joints_i = joints[human_idx]
     
+    #Construct dataframe entry
+    df_entry = np.concatenate([joints_i, np.asarray([label_text])])
+
     #Catch first label call otherwise index will be nan
     if output_df.values.shape[0] == 0:
-        output_df.loc[0] = [img_idx, joints_i, label_text]
+        output_df.loc[0] = df_entry
     else:
-        output_df.loc[output_df.index.max()+1] = [img_idx, joints_i, label_text]
+        output_df.loc[output_df.index.max()+1] = df_entry
     
     #Increase index of image
     human_idx+=1
@@ -221,7 +224,12 @@ if __name__ == '__main__':
     IMG_EXTENSIONS = ['jpg','png','jpeg']
     VID_EXTENSIONS = ['mp4','mkv','.avi']
 
-    cols = ['img_idx','joint','label']
+    cols = ["nose_x","nose_y","neck_x","neck_y","Rshoulder_x","Rshoulder_y","Relbow_x",
+        "Relbow_y","Rwrist_x","RWrist_y","LShoulder_x","LShoulder_y","LElbow_x",
+        "LElbow_y","LWrist_x","LWrist_y","RHip_x","RHip_y","RKnee_x","RKnee_y",
+        "RAnkle_x","RAnkle_y","LHip_x","LHip_y","LKnee_x","LKnee_y","LAnkle_x",
+        "LAnkle_y","REye_x","REye_y","LEye_x","LEye_y","REar_x","REar_y","LEar_x",
+        "LEar_y","class"]
     output_df = pd.DataFrame(columns=cols)
 
     #Image display resolution
