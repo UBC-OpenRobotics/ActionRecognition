@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import os
 import tkinter as tk
-from tkinter import PhotoImage, filedialog, messagebox
+from tkinter import PhotoImage, filedialog, messagebox, simpledialog
 from PIL import Image
 from PIL import ImageTk
 
@@ -19,6 +19,45 @@ if args.use_cpu:
 from utils import choose_run_mode, load_pretrain_model, set_video_writer
 from Pose.pose_visualizer import TfPoseVisualizer
 from Action.recognizer import load_action_premodel, framewise_recognize
+
+def extractFrames(vid_paths):
+
+    for vid_path in vid_paths:
+        #Extract base video name, and folder path to output frames
+        vid_name = os.path.basename(vid_path)
+        out_path = os.path.dirname(vid_path)
+
+        #Create videocapture object and extract number of frames to inform user.
+        vid = cv.VideoCapture(vid_path)
+        num_frames = vid.get(cv.CAP_PROP_FRAME_COUNT)
+
+        #Prompt user for a frame skip value, also informs user that a video is beign processed.
+        #Iterate to obtain a valid frame_skip
+        frame_skip=-1
+        while frame_skip < 0:
+            frame_skip = simpledialog.askinteger(title="Video Detected",
+                                  prompt="Found video %s in the data directory with a total of %i frames.\n Proceeding to extract frames. Please specify a frame skip value:"%(vid_name, num_frames))
+            if frame_skip is None:
+                frame_skip=-1
+
+        #Extract every frame_skip'th frame and save to base path
+        frame_count = 0
+        frame_saved = 0
+        ret, frame = vid.read()
+        while ret:
+            if frame_count % frame_skip == 0:
+                #Create name for the extracted frame and build save path
+                frame_name = '%s_%i.jpg' % (vid_name, frame_count)
+                frame_path = os.path.join(out_path, frame_name)
+                cv.imwrite(frame_path, frame)
+                frame_saved+=1
+            
+            frame_count+=1
+            ret, frame = vid.read()
+
+        #Inform user that frames have been extracted.
+        messagebox.showinfo("Frames Extracted", "Done extracting %i frames from %s" % (frame_saved, vid_name)) 
+
 
 
 def process_img():
@@ -142,12 +181,24 @@ def browseFiles():
     top_file_lbl.configure(text=data_dir)
 
 def openDataDir():
-    global img_paths, img_idx
+    global img_paths, img_idx, IMG_EXTENSIONS, VID_EXTENSIONS
     
-    img_names = os.listdir(data_dir)
-    img_paths = [os.path.join(data_dir, img_name) for img_name in img_names]
+
+    #Get all the names of contents of data dir and create full path to those files
+    file_names = os.listdir(data_dir)
+    file_paths = [os.path.join(data_dir, file_name) for file_name in file_names]
+
+    #Check if any videos are present in the data directory.
+    vids = [file_path for file_path in file_paths if file_path.split('.')[-1] in VID_EXTENSIONS]
+
+    if vids:
+        extractFrames(vids)
+
+    #Once any videos have been processed,frames have been writted to data path, need to get list of all images.
     img_idx=0
-    
+    img_names = [img_name for img_name in os.listdir(data_dir) if img_name.split('.')[-1] in IMG_EXTENSIONS]
+    img_paths = [os.path.join(data_dir, img_name) for img_name in img_names]
+
     process_img()
 
 def saveDataframe():
@@ -166,6 +217,9 @@ if __name__ == '__main__':
     img_paths = []
     img_idx = 0
     human_idx = 0
+
+    IMG_EXTENSIONS = ['jpg','png','jpeg']
+    VID_EXTENSIONS = ['mp4','mkv','.avi']
 
     cols = ['img_idx','joint','label']
     output_df = pd.DataFrame(columns=cols)
