@@ -12,8 +12,6 @@ class Actions(Enum):
     # wave = 3
 
     # framewise_recognition_under_scene.h5
-    stand = 0
-    walk = 1
-    operate = 2
-    fall_down = 3
+    Standing = 0
+    Sitting = 1
     # run = 4
