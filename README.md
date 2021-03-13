@@ -39,7 +39,7 @@ A skeleton-based real-time online action recognition project, classifying and re
  
 -----
 ## Labelling Data
-- `action_labeller.py` is a GUI application that is meant to label images with the intention of training action recognition. It can be launched with `python3 action_labeller.py`. To run on the CPU, run `python3 action_labeller.py --use_cpu 1`. Three test images are provided in `test_data`. 
+- `action_labeller.py` is a GUI application that is meant to label images with the intention of training action recognition. It can be launched with `python3 action_labeller.py`. To run on the CPU, run `python3 action_labeller.py --use_cpu 1`. Three test images are provided in `test_data`. It can also process videos in the data directory by first extracting individual frames.
 
 ------
 ## Acknowledge
